@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Salon Naturall — Zagorje ob Savi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+:root {
+  --sage:       #4d6054;
+  --sage-light: #6b8070;
+  --sage-pale:  #d2e8d8;
+  --warm:       #6d593c;
+  --warm-pale:  #f5e6ce;
+  --cream:      #fafaf5;
+  --stone:      #e8e8e3;
+  --ink:        #1a1c19;
+  --muted:      #737873;
+  --surface:    #f4f4ef;
+  --card:       #ffffff;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'DM Sans', sans-serif;
+  --nav-h: 72px;
+}
+body { font-family: var(--sans); background: var(--cream); color: var(--ink); overflow-x: hidden; }
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle; line-height: 1;
+}
+.icon-fill { font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+
+/* ── LOADER ── */
+#loader {
+  position: fixed; inset: 0; z-index: 9000;
+  background: var(--sage);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+#loader.out { opacity: 0; visibility: hidden; }
+.loader-logo { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 2rem; color: var(--sage-pale); }
+.loader-track { width: 100px; height: 1px; background: rgba(255,255,255,0.15); position: relative; overflow: hidden; }
+.loader-track::after { content:''; position:absolute; inset-block:0; left:-100%; width:100%; background:var(--sage-pale); animation: loaderFill 0.8s ease forwards; }
+@keyframes loaderFill { to { left:0; } }
+
+/* ── NAV ── */
+nav {
+  position: fixed; inset-inline: 0; top: 0; z-index: 200;
+  height: var(--nav-h); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; transition: background 0.4s, box-shadow 0.4s;
+}
+nav.bg { background: rgba(250,250,245,0.9); backdrop-filter: blur(18px); box-shadow: 0 1px 0 rgba(77,96,84,0.07); }
+.nav-logo { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 1.4rem; color: var(--sage); text-decoration: none; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 0.75rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.25s; }
+.nav-links a:hover { color: var(--sage); }
+.nav-cta { font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; background: var(--sage); color: #fff; padding: 10px 24px; border-radius: 100px; text-decoration: none; transition: background 0.25s, transform 0.2s; }
+.nav-cta:hover { background: var(--warm); transform: translateY(-1px); }
+.nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--sage); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-mobile { display: none; position: fixed; inset: 0; top: var(--nav-h); background: var(--cream); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { font-family: var(--serif); font-size: 2rem; font-weight: 300; color: var(--sage); text-decoration: none; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.85s cubic-bezier(.16,1,.3,1), transform 0.85s cubic-bezier(.16,1,.3,1); }
+.reveal.on { opacity: 1; transform: none; }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s} .d5{transition-delay:.5s}
+
+/* ── SHARED ── */
+.label { font-size: 0.64rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--warm); display: block; margin-bottom: 14px; }
+.h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.1; color: var(--sage); }
+.h2 em { font-style: italic; color: var(--warm); }
+.btn-primary { display: inline-block; font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--sage); color: #fff; padding: 14px 32px; border-radius: 100px; text-decoration: none; border: none; cursor: pointer; transition: background 0.25s, transform 0.2s, box-shadow 0.25s; }
+.btn-primary:hover { background: var(--warm); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(77,96,84,0.2); }
+.btn-outline { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--sage); text-decoration: none; transition: gap 0.25s, color 0.25s; }
+.btn-outline:hover { gap: 14px; color: var(--warm); }
+.legal-ph { color: var(--muted); font-style: italic; }
+
+/* ── HERO ── */
+.hero { min-height: 100svh; display: grid; grid-template-columns: 1fr 1fr; }
+.hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: calc(var(--nav-h) + 60px) 60px 80px; }
+.hero-eyebrow { font-size: 0.64rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--warm); margin-bottom: 20px; opacity:0; animation: fadeUp 0.8s 0.4s cubic-bezier(.16,1,.3,1) forwards; }
+.hero-h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(2.8rem, 5vw, 5rem); line-height: 1.05; color: var(--sage); margin-bottom: 26px; opacity:0; animation: fadeUp 0.9s 0.55s cubic-bezier(.16,1,.3,1) forwards; }
+.hero-h1 em { font-style: italic; color: var(--warm); }
+.hero-sub { font-size: 1rem; line-height: 1.75; color: var(--muted); font-weight: 300; max-width: 400px; margin-bottom: 44px; opacity:0; animation: fadeUp 0.9s 0.7s cubic-bezier(.16,1,.3,1) forwards; }
+.hero-actions { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; opacity:0; animation: fadeUp 0.9s 0.85s cubic-bezier(.16,1,.3,1) forwards; }
+
+.hero-right { position: relative; overflow: hidden; background: linear-gradient(160deg,#c8d8ca,#a8bfaa); }
+.hero-right img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: heroZoom 1.4s 0.2s cubic-bezier(.16,1,.3,1) forwards; }
+@keyframes heroZoom { to { transform: scale(1); } }
+
+.hero-card { position: absolute; bottom: 56px; left: -32px; z-index: 2; background: rgba(250,250,245,0.94); backdrop-filter: blur(12px); border-radius: 16px; padding: 24px 28px; max-width: 210px; box-shadow: 0 16px 48px rgba(26,28,25,0.14); opacity:0; animation: slideCard 1s 1.2s cubic-bezier(.16,1,.3,1) forwards, floatY 5s 2.2s ease-in-out infinite; }
+@keyframes slideCard { from{opacity:0;transform:translateX(-14px)} to{opacity:1;transform:none} }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.hero-card blockquote { font-family: var(--serif); font-style: italic; font-size: 0.95rem; line-height: 1.5; color: var(--sage); margin-bottom: 10px; }
+.hero-card cite { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-style: normal; }
+
+.hero-scroll { position: absolute; bottom: 28px; left: 60px; display: flex; align-items: center; gap: 12px; opacity:0; animation: fadeUp 0.8s 1.4s forwards; z-index: 3; }
+.hero-scroll span { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+.scroll-line { width: 40px; height: 1px; background: var(--stone); position: relative; overflow: hidden; }
+.scroll-line::after { content:''; position:absolute; inset-block:0; left:-100%; width:100%; background:var(--sage); animation: scrollSlide 1.6s 1.4s ease-in-out infinite; }
+@keyframes scrollSlide { 0%{left:-100%} 100%{left:100%} }
+
+/* ── ABOUT ── */
+.about { padding: 100px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.about-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.about-imgs .tall { grid-row: 1/3; margin-top: 48px; }
+.img-wrap { border-radius: 18px; overflow: hidden; background: linear-gradient(140deg,#6b8070,#4d6054); }
+.img-wrap.warm { background: linear-gradient(140deg,#a08060,#6d593c); }
+.img-wrap.stone { background: linear-gradient(140deg,#c8d0c8,#a0aba0); }
+.img-wrap img { width:100%; object-fit:cover; display:block; transition: transform 0.6s cubic-bezier(.16,1,.3,1); }
+.img-wrap:hover img { transform: scale(1.03); }
+.about-imgs .tall .img-wrap img { height: 440px; }
+.about-imgs .short .img-wrap img { height: 208px; }
+.about-text p { font-size: 0.96rem; line-height: 1.8; color: #5a5c59; font-weight: 300; margin-bottom: 18px; }
+.about-sig { display: flex; align-items: center; gap: 14px; margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--stone); }
+.about-sig-line { width: 36px; height: 1px; background: var(--sage-pale); flex-shrink: 0; }
+.about-sig em { font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--sage); }
+
+/* ── STATS ── */
+.stats { background: var(--sage); display: grid; grid-template-columns: repeat(4,1fr); }
+.stat { padding: 48px 28px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
+.stat:last-child { border-right: none; }
+.stat-num { font-family: var(--serif); font-weight: 300; font-size: 2.8rem; color: var(--sage-pale); display: block; line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.42); }
+
+/* ── SERVICES ── */
+.services { padding: 100px 60px; background: var(--surface); }
+.services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; }
+.services-link { font-size: 0.7rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--sage); text-decoration: none; border-bottom: 1px solid var(--sage-pale); padding-bottom: 3px; transition: color 0.25s, border-color 0.25s; }
+.services-link:hover { color: var(--warm); border-color: var(--warm); }
+.services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.service-card { border-radius: 24px; overflow: hidden; aspect-ratio: 4/5; position: relative; }
+.service-card:nth-child(2) { margin-top: 40px; }
+.sc-bg { position: absolute; inset: 0; }
+.sc-bg img { width:100%; height:100%; object-fit:cover; transition: transform 0.7s cubic-bezier(.16,1,.3,1); }
+.service-card:hover .sc-bg img { transform: scale(1.06); }
+.sc-bg-ph { position:absolute; inset:0; background: linear-gradient(160deg,#6b8070,#4d6054); }
+.sc-bg-ph.warm { background: linear-gradient(160deg,#a08060,#6d593c); }
+.sc-bg-ph.stone { background: linear-gradient(160deg,#c8d0c8,#a0aba0); }
+.sc-overlay { position:absolute; inset:0; background: linear-gradient(to top, rgba(20,24,20,0.72) 0%, transparent 55%); transition: background 0.4s; }
+.service-card:hover .sc-overlay { background: linear-gradient(to top, rgba(20,24,20,0.82) 0%, rgba(20,24,20,0.08) 60%); }
+.sc-content { position:absolute; bottom:0; left:0; right:0; padding:28px; }
+.sc-content h3 { font-family:var(--serif); font-size:1.5rem; font-weight:400; color:#fff; margin-bottom:6px; }
+.sc-content p { font-size:0.82rem; line-height:1.6; color:rgba(255,255,255,0.7); font-weight:300; max-height:0; overflow:hidden; transition:max-height 0.45s cubic-bezier(.16,1,.3,1), margin 0.45s; }
+.service-card:hover .sc-content p { max-height:60px; margin-bottom:18px; }
+.sc-btn { display:inline-flex; align-items:center; gap:6px; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:#fff; background:rgba(255,255,255,0.13); border:1px solid rgba(255,255,255,0.25); padding:9px 18px; border-radius:100px; cursor:pointer; transition:background 0.25s,color 0.25s; }
+.sc-btn:hover { background:#fff; color:var(--sage); }
+
+/* ── TESTIMONIALS ── */
+.testimonials { padding: 100px 60px; }
+.testimonials-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 18px; margin-top: 52px; }
+.t-card { background: var(--card); border-radius: 22px; padding: 32px; border: 1px solid var(--stone); transition: transform 0.35s cubic-bezier(.16,1,.3,1), box-shadow 0.35s; display: flex; flex-direction: column; }
+.t-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(26,28,25,0.07); }
+.t-featured { grid-column:1; grid-row:1/3; }
+.t-dark { background:var(--sage); border-color:var(--sage); grid-column:2/4; }
+.stars { display:flex; gap:3px; color:var(--warm); margin-bottom:18px; }
+.stars .material-symbols-outlined { font-size:0.95rem; font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24; }
+.t-dark .stars { color:var(--warm-pale); }
+.t-quote { font-family:var(--serif); font-style:italic; font-size:1.3rem; line-height:1.45; color:var(--sage); margin-bottom:14px; }
+.t-featured .t-quote { font-size:1.55rem; }
+.t-dark .t-quote { color:var(--sage-pale); font-size:1.15rem; }
+.t-body { font-size:0.86rem; line-height:1.75; color:var(--muted); font-weight:300; flex:1; }
+.t-author { display:flex; align-items:center; gap:12px; margin-top:24px; padding-top:20px; border-top:1px solid var(--stone); }
+.t-dark .t-author { border-top-color:rgba(255,255,255,0.12); }
+.t-avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; background:var(--sage-pale); color:var(--sage); font-family:var(--serif); font-size:1rem; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.t-avatar img { width:100%; height:100%; object-fit:cover; }
+.t-dark .t-avatar { background:rgba(255,255,255,0.12); color:var(--sage-pale); }
+.t-name { font-size:0.86rem; font-weight:500; color:var(--sage); }
+.t-dark .t-name { color:var(--sage-pale); }
+.t-meta { font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+.t-dark .t-meta { color:rgba(255,255,255,0.35); }
+
+/* ── LOCATION ── */
+.location { padding: 100px 60px; background: var(--surface); display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.location-items { display:flex; flex-direction:column; gap:34px; margin-top:38px; }
+.location-item { display:flex; gap:18px; align-items:flex-start; }
+.loc-icon { width:44px; height:44px; border-radius:50%; flex-shrink:0; background:rgba(77,96,84,0.09); display:flex; align-items:center; justify-content:center; color:var(--sage); transition:background 0.25s; }
+.location-item:hover .loc-icon { background:rgba(77,96,84,0.18); }
+.location-item h4 { font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--warm); margin-bottom:5px; }
+.location-item p { font-size:0.92rem; line-height:1.75; color:#5a5c59; font-weight:300; }
+.location-map { border-radius:28px; overflow:hidden; height:460px; box-shadow:0 24px 64px rgba(26,28,25,0.1); filter:saturate(0.75); transition:filter 0.5s; }
+.location-map:hover { filter:saturate(1); }
+.location-map iframe { width:100%; height:100%; border:none; display:block; }
+
+/* ── LEGAL ── */
+.legal-wrap { padding: 100px 60px; display: grid; grid-template-columns: 190px 1fr; gap: 72px; }
+.legal-sidebar { position:sticky; top:calc(var(--nav-h) + 24px); height:fit-content; }
+.legal-sidebar p { font-size:0.6rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.legal-sidebar ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.legal-sidebar a { font-family:var(--serif); font-size:1.05rem; font-weight:300; color:var(--muted); text-decoration:none; transition:color 0.25s; }
+.legal-sidebar a:hover, .legal-sidebar a.active { color:var(--sage); }
+.legal-body { display:flex; flex-direction:column; gap:68px; }
+.legal-section { scroll-margin-top:100px; }
+.legal-section h2 { font-family:var(--serif); font-size:2rem; font-weight:300; color:var(--sage); margin-bottom:26px; }
+.legal-card { background:var(--surface); border-radius:18px; padding:40px; }
+.legal-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px 40px; }
+.legal-field strong { display:block; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--sage); margin-bottom:6px; }
+.legal-field p { font-size:0.88rem; line-height:1.8; color:#5a5c59; font-weight:300; }
+.legal-article { display:flex; gap:28px; padding:26px 0; border-bottom:1px solid var(--stone); }
+.legal-article:last-child { border-bottom:none; padding-bottom:0; }
+.legal-num { font-family:var(--serif); font-size:1.8rem; color:var(--stone); font-weight:300; flex-shrink:0; line-height:1.1; transition:color 0.3s; }
+.legal-article:hover .legal-num { color:var(--sage-pale); }
+.legal-article h3 { font-family:var(--serif); font-size:1.05rem; font-weight:400; color:var(--sage); margin-bottom:8px; }
+.legal-article p { font-size:0.86rem; line-height:1.8; color:#5a5c59; font-weight:300; }
+.privacy-grid { display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+.privacy-block h4 { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--warm); margin-bottom:10px; }
+.privacy-block p { font-size:0.86rem; line-height:1.8; color:#5a5c59; font-weight:300; margin-bottom:18px; }
+.rights-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.rights-list li { display:flex; align-items:center; gap:10px; font-size:0.86rem; color:#5a5c59; font-weight:300; }
+.rights-list .material-symbols-outlined { font-size:0.95rem; color:var(--sage); font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 24; }
+.privacy-contact { margin-top:18px; padding-top:18px; border-top:1px solid var(--stone); font-size:0.8rem; color:var(--muted); font-style:italic; }
+.privacy-contact a { color:var(--sage); text-decoration:none; }
+.legal-cta { background:linear-gradient(135deg,var(--sage) 0%,var(--sage-light) 100%); border-radius:20px; padding:44px 52px; display:flex; justify-content:space-between; align-items:center; gap:32px; }
+.legal-cta h3 { font-family:var(--serif); font-size:1.5rem; font-weight:300; color:#fff; margin-bottom:6px; }
+.legal-cta p { font-size:0.84rem; color:rgba(255,255,255,0.65); font-weight:300; }
+.legal-cta a { flex-shrink:0; font-size:0.7rem; letter-spacing:0.13em; text-transform:uppercase; color:#fff; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.28); padding:12px 28px; border-radius:100px; text-decoration:none; transition:background 0.25s; }
+.legal-cta a:hover { background:rgba(255,255,255,0.22); }
+
+/* ── FOOTER ── */
+footer { background:var(--ink); padding:72px 60px 36px; }
+.footer-top { display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:48px; margin-bottom:52px; }
+.footer-logo { font-family:var(--serif); font-style:italic; font-weight:300; font-size:1.3rem; color:var(--sage-pale); display:block; margin-bottom:12px; }
+.footer-desc { font-size:0.82rem; line-height:1.75; color:rgba(255,255,255,0.3); font-weight:300; max-width:260px; }
+.footer-col h5 { font-size:0.58rem; letter-spacing:0.26em; text-transform:uppercase; color:rgba(255,255,255,0.22); margin-bottom:18px; }
+.footer-col a { display:block; font-size:0.84rem; color:rgba(255,255,255,0.42); text-decoration:none; margin-bottom:10px; transition:color 0.25s; }
+.footer-col a:hover { color:var(--sage-pale); }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.06); padding-top:26px; display:flex; justify-content:space-between; align-items:center; }
+.footer-copy { font-size:0.72rem; color:rgba(255,255,255,0.2); }
+.footer-back { background:none; border:none; cursor:pointer; font-size:0.7rem; letter-spacing:0.13em; text-transform:uppercase; color:rgba(255,255,255,0.22); display:flex; align-items:center; gap:6px; transition:color 0.25s; }
+.footer-back:hover { color:var(--sage-pale); }
+
+/* ── PAGE DOTS ── */
+.page-dots { position:fixed; right:22px; top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:10px; }
+.dot { width:6px; height:6px; border-radius:50%; background:var(--stone); border:none; cursor:pointer; padding:0; transition:background 0.25s,transform 0.25s; position:relative; }
+.dot:hover,.dot.active { background:var(--sage); transform:scale(1.5); }
+.dot::before { content:attr(data-label); position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:0.58rem; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); white-space:nowrap; opacity:0; transition:opacity 0.25s; pointer-events:none; }
+.dot:hover::before { opacity:1; }
+
+/* ── KEYFRAMES ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  nav { padding: 0 28px; }
+  .nav-links,.nav-cta { display:none; }
+  .nav-burger { display:flex; }
+  .page-dots { display:none; }
+  .hero { grid-template-columns:1fr; min-height:auto; }
+  .hero-left { padding: calc(var(--nav-h)+44px) 32px 56px; }
+  .hero-right { height: 55vw; min-height:280px; }
+  .hero-card { display:none; }
+  .hero-scroll { left:32px; }
+  .about { grid-template-columns:1fr; padding:72px 32px; gap:48px; }
+  .about-imgs .tall .img-wrap img { height:360px; }
+  .about-imgs .short .img-wrap img { height:168px; }
+  .stats { grid-template-columns:1fr 1fr; }
+  .stat { border-right:none; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .stat:nth-child(odd) { border-right:1px solid rgba(255,255,255,0.1); }
+  .stat:nth-child(3),.stat:nth-child(4) { border-bottom:none; }
+  .services { padding:72px 32px; }
+  .services-grid { grid-template-columns:1fr; gap:14px; }
+  .service-card { aspect-ratio:16/9; }
+  .service-card:nth-child(2) { margin-top:0; }
+  .sc-content p { max-height:60px !important; margin-bottom:16px !important; }
+  .testimonials { padding:72px 32px; }
+  .testimonials-grid { grid-template-columns:1fr; }
+  .t-featured,.t-dark { grid-column:1; grid-row:auto; }
+  .location { grid-template-columns:1fr; padding:72px 32px; gap:48px; }
+  .location-map { height:340px; }
+  .legal-wrap { grid-template-columns:1fr; padding:72px 32px; gap:0; }
+  .legal-sidebar { display:none; }
+  .legal-grid,.privacy-grid { grid-template-columns:1fr; }
+  .legal-cta { flex-direction:column; text-align:center; gap:24px; }
+  .footer-top { grid-template-columns:1fr 1fr; gap:32px; }
+  footer { padding:56px 32px 28px; }
+  .services-header { flex-direction:column; align-items:flex-start; gap:10px; }
+}
+@media (max-width: 640px) {
+  nav { padding:0 20px; }
+  .hero-left { padding:calc(var(--nav-h)+28px) 20px 48px; }
+  .hero-right { height:70vw; }
+  .hero-scroll { display:none; }
+  .about,.services,.testimonials,.location { padding:60px 20px; }
+  .legal-wrap { padding:60px 20px; }
+  footer { padding:48px 20px 24px; }
+  .footer-top { grid-template-columns:1fr; }
+  .stats { grid-template-columns:1fr 1fr; }
+  .stat { padding:30px 16px; }
+  .stat-num { font-size:2.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Salon Naturall</div>
+  <div class="loader-track"></div>
+</div>
+
+<!-- PAGE DOTS -->
+<div class="page-dots" aria-hidden="true">
+  <button class="dot active" data-section="hero"         data-label="Domov"></button>
+  <button class="dot"        data-section="about"        data-label="O nas"></button>
+  <button class="dot"        data-section="services"     data-label="Storitve"></button>
+  <button class="dot"        data-section="testimonials" data-label="Mnenja"></button>
+  <button class="dot"        data-section="location"     data-label="Lokacija"></button>
+  <button class="dot"        data-section="legal-wrap"   data-label="Pravno" style="display:none"></button>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#hero">Salon Naturall</a>
+  <ul class="nav-links">
+    <li><a href="#about">O nas</a></li>
+    <li><a href="#services">Storitve</a></li>
+    <li><a href="#testimonials">Mnenja</a></li>
+    <li><a href="#location">Lokacija</a></li>
+  </ul>
+  <a class="nav-cta" href="#" onclick="openBooking(event)">Rezerviraj termin</a>
+  <button class="nav-burger" id="burger" aria-label="Meni">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile" id="mobile-menu">
+  <a href="#about"        onclick="closeMobile()">O nas</a>
+  <a href="#services"     onclick="closeMobile()">Storitve</a>
+  <a href="#testimonials" onclick="closeMobile()">Mnenja</a>
+  <a href="#location"     onclick="closeMobile()">Lokacija</a>
+  <a class="btn-primary"  href="#" onclick="openBooking(event);closeMobile();" style="margin-top:8px">Rezerviraj termin</a>
+</div>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <div class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Zagorje ob Savi · Slovenija</p>
+      <h1 class="hero-h1">Naravna<br/>lepota, <em>ki<br/>jo začutite.</em></h1>
+      <p class="hero-sub">Celostna nega obraza in telesa z izbranimi naravnimi preparati. Vaše zavetje pred vsakodnevnim stresom.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#" onclick="openBooking(event)">Rezerviraj termin</a>
+        <a class="btn-outline"  href="#services">Naše storitve <span style="font-size:1rem;line-height:1">→</span></a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&q=80&fit=crop" alt="Salon ambient" onerror="this.style.display='none'"/>
+      <div class="hero-card">
+        <blockquote>"Lepota se začne v trenutku, ko se odločiš biti ti."</blockquote>
+        <cite>— Salon Naturall</cite>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Pomaknite se</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ════ ABOUT ════ -->
+<section class="about" id="about">
+  <div class="about-imgs reveal">
+    <div class="tall">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80&fit=crop alt="Kozmetika" onerror="this.style.display='none'" style="height:440px"/>
+      </div>
+    </div>
+    <div class="short">
+      <div class="img-wrap warm">
+        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80&fit=crop alt="Nega" onerror="this.style.display='none'" style="height:208px"/>
+      </div>
+    </div>
+    <div class="short">
+      <div class="img-wrap stone">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80&fit=crop alt="Stranka" onerror="this.style.display='none'" style="height:208px"/>
+      </div>
+    </div>
+  </div>
+  <div class="about-text">
+    <span class="label reveal">Zgodba salona</span>
+    <h2 class="h2 reveal d1">Celostni pristop<br/>k <em>naravni lepoti</em></h2>
+    <div style="margin-top:26px">
+      <p class="reveal d2">V Salonu Naturall verjamemo, da prava lepota izhaja iz ravnovesja med telesom, umom in naravo. Nahajamo se v mirnem okolju Zagorja ob Savi, kjer vam nudimo zavetje pred vsakodnevnim stresom.</p>
+      <p class="reveal d3">Naša filozofija temelji na naravnih sestavinah in tradicionalnih metodah, dopolnjenih z modernimi kozmetičnimi inovacijami. Vsaka storitev je prilagojena vašim individualnim potrebam.</p>
+    </div>
+    <div class="about-sig reveal d4">
+      <span class="about-sig-line"></span>
+      <em class="legal-ph">Vaše ime, ustanoviteljica</em>
+    </div>
+  </div>
+</section>
+
+<!-- ════ STATS ════ -->
+<div class="stats" id="stats">
+  <div class="stat reveal">
+    <span class="stat-num" data-count="850">0+</span>
+    <span class="stat-label">Zadovoljnih strank</span>
+  </div>
+  <div class="stat reveal d1">
+    <span class="stat-num">Est. 2019</span>
+    <span class="stat-label">Leto ustanovitve</span>
+  </div>
+  <div class="stat reveal d2">
+    <span class="stat-num" data-count="12">0</span>
+    <span class="stat-label">Vrst storitev</span>
+  </div>
+  <div class="stat reveal d3">
+    <span class="stat-num">5★</span>
+    <span class="stat-label">Povprečna ocena</span>
+  </div>
+</div>
+
+<!-- ════ SERVICES ════ -->
+<section class="services" id="services">
+  <div class="services-header reveal">
+    <div>
+      <span class="label">Kaj nudimo</span>
+      <h2 class="h2">Naše <em>storitve</em></h2>
+    </div>
+    <a class="services-link" href="#location">Celoten cenik →</a>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="sc-bg">
+        <div class="sc-bg-ph"></div>
+        <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80&fit=crop alt="Nega obraza" onerror="this.style.display='none'"/>
+      </div>
+      <div class="sc-overlay"></div>
+      <div class="sc-content">
+        <h3>Nega obraza</h3>
+        <p>Prilagojene terapije za sijočo, zdravo kožo z naravnimi preparati.</p>
+        <button class="sc-btn">Izvedi več →</button>
+      </div>
+    </div>
+    <div class="service-card reveal d2">
+      <div class="sc-bg">
+        <div class="sc-bg-ph warm"></div>
+        <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80&fit=crop alt="Masaže" onerror="this.style.display='none'"/>
+      </div>
+      <div class="sc-overlay"></div>
+      <div class="sc-content">
+        <h3>Masaže telesa</h3>
+        <p>Globoka sprostitev z aromaterapijo in tehnikami za sproščanje napetosti.</p>
+        <button class="sc-btn">Izvedi več →</button>
+      </div>
+    </div>
+    <div class="service-card reveal d4">
+      <div class="sc-bg">
+        <div class="sc-bg-ph stone"></div>
+        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=80&fit=crop alt="Manikura" onerror="this.style.display='none'"/>
+      </div>
+      <div class="sc-overlay"></div>
+      <div class="sc-content">
+        <h3>Manikura &amp; Pedikura</h3>
+        <p>Elegantna nega nohtov z naravnimi preparati brez škodljivih snovi.</p>
+        <button class="sc-btn">Izvedi več →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section class="testimonials" id="testimonials">
+  <span class="label reveal">Zadovoljne stranke</span>
+  <h2 class="h2 reveal d1">Mnenja, ki <em>govorijo zase</em></h2>
+  <div class="testimonials-grid">
+    <div class="t-card t-featured reveal">
+      <div class="stars"><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span></div>
+      <p class="t-quote">"Nepozabna izkušnja. Salon Naturall je oaza miru — moja koža še nikoli ni izgledala tako sveže in sijoče."</p>
+      <p class="t-body">Masaža obraza je bila neverjetna. Čutiti je, da vsak preparat izberejo z veliko skrbjo. Komaj čakam na naslednji obisk!</p>
+      <div class="t-author">
+        <div class="t-avatar">
+          <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80&fit=crop alt="A" onerror="this.outerHTML='<div class=\'t-avatar\'>A</div>'"/>
+        </div>
+        <div><div class="t-name">Ana Novak</div><div class="t-meta">Ljubljana · Nega obraza</div></div>
+      </div>
+    </div>
+    <div class="t-card reveal d1">
+      <div class="stars"><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span></div>
+      <p class="t-quote">"Zelo profesionalen pristop. Priporočam vsem!"</p>
+      <p class="t-body">Moja koža je vidno boljša že po prvem obisku.</p>
+      <div class="t-author" style="margin-top:auto">
+        <div class="t-avatar">M</div>
+        <div><div class="t-name">Marko P.</div><div class="t-meta">Nov. 2024</div></div>
+      </div>
+    </div>
+    <div class="t-card reveal d2">
+      <div class="stars"><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span></div>
+      <p class="t-quote">"Čudovit ambient. Zagotovo se vrnem!"</p>
+      <p class="t-body">Osebje je izjemno prijazno in strokovno.</p>
+      <div class="t-author" style="margin-top:auto">
+        <div class="t-avatar">K</div>
+        <div><div class="t-name">Katarina Z.</div><div class="t-meta">Sep. 2024</div></div>
+      </div>
+    </div>
+    <div class="t-card t-dark reveal d3">
+      <div class="stars"><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span><span class="material-symbols-outlined icon-fill">star</span></div>
+      <p class="t-quote">"Edini salon, kjer resnično razumejo potrebe moje občutljive kože."</p>
+      <div class="t-author">
+        <div class="t-avatar">E</div>
+        <div><div class="t-name">Elena V.</div><div class="t-meta">Zvesta stranka</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ LOCATION ════ -->
+<section class="location" id="location">
+  <div>
+    <span class="label reveal">Obiščite nas</span>
+    <h2 class="h2 reveal d1">Kje nas <em>najdete</em></h2>
+    <div class="location-items">
+      <div class="location-item reveal d2">
+        <div class="loc-icon"><span class="material-symbols-outlined">location_on</span></div>
+        <div><h4>Naslov</h4><p>Podvine 36<br/>1420 Zagorje ob Savi, Slovenija</p></div>
+      </div>
+      <div class="location-item reveal d3">
+        <div class="loc-icon"><span class="material-symbols-outlined">schedule</span></div>
+        <div><h4>Delovni čas</h4><p>Ponedeljek – Petek: 08:00 – 19:00<br/>Sobota: 08:00 – 13:00</p></div>
+      </div>
+      <div class="location-item reveal d4">
+        <div class="loc-icon"><span class="material-symbols-outlined">call</span></div>
+        <div><h4>Kontakt</h4><p><span class="legal-ph">+386 (0)XX XXX XXX</span><br/><span class="legal-ph"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="11787f777e5162707d7e7f7f70656463707d7d3f6278">[email&#160;protected]</a></span></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="location-map reveal d2">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11019.2!2d14.9966!3d46.1308!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x477a83d14a03d5d5%3A0x9a59ba97a7e89a7a!2sZagorje%20ob%20Savi!5e0!3m2!1ssl!2ssi!4v1700000000000!5m2!1ssl!2ssi" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokacija"></iframe>
+  </div>
+</section>
+
+<!-- ════ LEGAL ════ -->
+<div class="legal-wrap" id="legal-wrap">
+  <div class="legal-sidebar">
+    <p>Na tej strani</p>
+    <ul>
+      <li><a href="#impresum" class="active">Impresum</a></li>
+      <li><a href="#terms">Splošni pogoji</a></li>
+      <li><a href="#privacy">Zasebnost</a></li>
+    </ul>
+  </div>
+  <div class="legal-body">
+
+    <div class="legal-section reveal" id="impresum">
+      <h2>Impresum</h2>
+      <div class="legal-card">
+        <div class="legal-grid">
+          <div class="legal-field">
+            <strong>Podjetje</strong>
+            <p>Salon Naturall<br/>Podvine 36<br/>1420 Zagorje ob Savi<br/>Slovenija</p>
+          </div>
+          <div class="legal-field">
+            <strong>Kontakt</strong>
+            <p><span class="legal-ph"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a23242c250a392b262524242b3e3f382b2626643923">[email&#160;protected]</a></span><br/><span class="legal-ph">+386 (0)XX XXX XXX</span><br/>www.salonnaturall.si</p>
+          </div>
+          <div class="legal-field">
+            <strong>Registracija</strong>
+            <p>Matična številka: <span class="legal-ph">XXXXXXXXX</span><br/>Davčna številka: <span class="legal-ph">SIXXXXXXXX</span><br/>Zavezanec za DDV: Da</p>
+          </div>
+          <div class="legal-field">
+            <strong>Odgovorna oseba</strong>
+            <p class="legal-ph">Vaše ime, direktorica</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legal-section reveal" id="terms">
+      <h2>Splošni pogoji poslovanja</h2>
+      <div class="legal-card">
+        <div class="legal-article">
+          <span class="legal-num">01</span>
+          <div>
+            <h3>Uvodne določbe</h3>
+            <p>Splošni pogoji poslovanja salona Salon Naturall so sestavljeni v skladu s predpisi s področja varstva potrošnikov, na podlagi priporočil GZS in mednarodnih kodeksov za e-poslovanje. Pogoji določajo delovanje spletne strani, pravice in obveznosti uporabnika ter poslovni odnos med salonom in stranko.</p>
+          </div>
+        </div>
+        <div class="legal-article">
+          <span class="legal-num">02</span>
+          <div>
+            <h3>Naročanje in odpovedi</h3>
+            <p>Naročanje na storitve je možno preko spletnega obrazca, telefona ali osebno. V primeru, da na dogovorjeni termin ne morete priti, vas prosimo, da nas o tem obvestite vsaj 24 ur prej. V nasprotnem primeru si pridržujemo pravico do zaračunavanja 50 % vrednosti rezervirane storitve.</p>
+          </div>
+        </div>
+        <div class="legal-article">
+          <span class="legal-num">03</span>
+          <div>
+            <h3>Cene in plačila</h3>
+            <p>Vse cene storitev in izdelkov so navedene v evrih (EUR) in vključujejo DDV, razen če je izrecno navedeno drugače. Salon Naturall si pridržuje pravico do spremembe cenika. Veljavne so cene, ki so objavljene v času naročila storitve.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legal-section reveal" id="privacy">
+      <h2>Politika zasebnosti</h2>
+      <div class="legal-card">
+        <div class="privacy-grid">
+          <div class="privacy-block">
+            <h4>Zbiranje podatkov</h4>
+            <p>V Salonu Naturall zbiramo osebne podatke, ki nam jih posredujete prostovoljno ob rezervaciji termina — ime, priimek, telefonska številka in e-naslov. Te podatke uporabljamo izključno za izvajanje naših storitev.</p>
+            <h4>Varovanje podatkov</h4>
+            <p>Vaši podatki so varni. Uporabljamo sodobne tehnične in organizacijske ukrepe za zaščito pred nepooblaščenim dostopom. Podatkov nikoli ne posredujemo tretjim osebam brez vašega izrecnega soglasja.</p>
+          </div>
+          <div class="privacy-block">
+            <h4>Vaše pravice (GDPR)</h4>
+            <ul class="rights-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Pravica do dostopa do podatkov</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Pravica do popravka netočnih podatkov</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Pravica do izbrisa (pozabe)</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Pravica do preklica privolitve</li>
+            </ul>
+            <p class="privacy-contact">Za vprašanja glede vaših podatkov nam pišite na <a href="/cdn-cgi/l/email-protection#96f2e6f9d6e5f7faf9f8f8f7e2e3e4f7fafab8e5ff"><span class="__cf_email__" data-cfemail="84e0f4ebc4f7e5e8ebeaeae5f0f1f6e5e8e8aaf7ed">[email&#160;protected]</span></a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legal-cta reveal">
+      <div>
+        <h3>Imate vprašanja?</h3>
+        <p>Naša ekipa vam je na voljo za vsa pojasnila glede pravnih pogojev in vaših pravic.</p>
+      </div>
+      <a href="#" onclick="openBooking(event)">Pišite nam</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-logo">Salon Naturall</span>
+      <p class="footer-desc">Vaša oaza miru in naravne nege v srcu Zagorja ob Savi. Est. 2019.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navigacija</h5>
+      <a href="#about">O nas</a>
+      <a href="#services">Storitve</a>
+      <a href="#testimonials">Mnenja</a>
+      <a href="#location">Lokacija</a>
+    </div>
+    <div class="footer-col">
+      <h5>Pravno</h5>
+      <a href="#impresum">Impresum</a>
+      <a href="#terms">Splošni pogoji</a>
+      <a href="#privacy">Politika zasebnosti</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Salon Naturall · Podvine 36, 1420 Zagorje ob Savi</span>
+    <button class="footer-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="material-symbols-outlined" style="font-size:0.9rem">arrow_upward</span>
+      Nazaj na vrh
+    </button>
+  </div>
+</footer>
+
+<!-- uChatz widget — note: attribute is data-id, not data-key -->
+<script src="https://uchatz.com/widget.js" data-id="47028519-4508-45fc-a7c8-1fb10147db57" async></script>
+
+<script>
+// Open uChatz widget — clicks the chattly bubble directly
+function openBooking(e) {
+  if (e) e.preventDefault();
+  const bubble = document.getElementById('chattly-bubble');
+  if (bubble) {
+    bubble.click();
+  } else {
+    // Widget not loaded yet — wait for it then open
+    const observer = new MutationObserver(() => {
+      const b = document.getElementById('chattly-bubble');
+      if (b) { b.click(); observer.disconnect(); }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
+// Loader
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('out'), 700);
+});
+
+// Nav scroll
+const mainNav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => { mainNav.classList.toggle('bg', window.scrollY > 40); updateDots(); updateLegalNav(); }, { passive: true });
+
+// Mobile menu
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+burger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  burger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+  burger.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Scroll reveal
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// Counter
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, target = +el.dataset.count;
+    const suffix = el.textContent.replace(/[0-9]/g,'').trim();
+    let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 1500, 1);
+      el.textContent = Math.floor((1 - Math.pow(1-p,3)) * target) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    co.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => co.observe(el));
+
+// Page dots
+const sectionIds = ['hero','about','stats','services','testimonials','location','legal-wrap'];
+const dots = document.querySelectorAll('.dot');
+function updateDots() {
+  const mid = window.scrollY + window.innerHeight * 0.35;
+  let cur = sectionIds[0];
+  sectionIds.forEach(id => { const el = document.getElementById(id); if (el && el.offsetTop <= mid + 10) cur = id; });
+  dots.forEach(d => d.classList.toggle('active', d.dataset.section === cur));
+}
+dots.forEach(d => { d.addEventListener('click', () => { const el = document.getElementById(d.dataset.section); if(el) el.scrollIntoView({behavior:'smooth'}); }); });
+
+// Legal sidebar nav
+const legalLinks = document.querySelectorAll('.legal-sidebar a');
+function updateLegalNav() {
+  const y = window.scrollY + 140;
+  ['impresum','terms','privacy'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= y) legalLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+id));
+  });
+}
+</script>
+</body>
+</html>
