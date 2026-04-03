@@ -24,7 +24,8 @@ html { scroll-behavior: smooth; }
   --sans:  'DM Sans', sans-serif;
   --nav-h: 72px;
 }
-body { font-family: var(--sans); background: var(--cream); color: var(--ink); overflow-x: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--cream); color: var(--ink); overflow-x: hidden; overflow-wrap: break-word; word-break: break-word; }
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
   vertical-align: middle; line-height: 1;
@@ -249,7 +250,7 @@ footer { background:var(--ink); padding:72px 60px 36px; }
 @media (max-width: 1024px) {
   nav { padding: 0 28px; }
   .nav-links,.nav-cta { display:none; }
-  .nav-burger { display:flex; }
+  .nav-burger { display:flex; padding:12px; min-width:44px; min-height:44px; }
   .page-dots { display:none; }
   .hero { grid-template-columns:1fr; min-height:auto; }
   .hero-left { padding: calc(var(--nav-h)+44px) 32px 56px; }
@@ -281,6 +282,17 @@ footer { background:var(--ink); padding:72px 60px 36px; }
   footer { padding:56px 32px 28px; }
   .services-header { flex-direction:column; align-items:flex-start; gap:10px; }
 }
+@media (max-width: 768px) {
+  .about { padding:64px 28px; gap:40px; }
+  .about-imgs .tall .img-wrap img { height:300px; }
+  .about-imgs .short .img-wrap img { height:150px; }
+  .services,.testimonials { padding:64px 28px; }
+  .location { padding:64px 28px; gap:40px; }
+  .location-map { height:320px; }
+  .legal-wrap { padding:64px 28px; }
+  footer { padding:52px 28px 26px; }
+  .sc-btn { min-height:44px; padding:12px 20px; }
+}
 @media (max-width: 640px) {
   nav { padding:0 20px; }
   .hero-left { padding:calc(var(--nav-h)+28px) 20px 48px; }
@@ -293,6 +305,27 @@ footer { background:var(--ink); padding:72px 60px 36px; }
   .stats { grid-template-columns:1fr 1fr; }
   .stat { padding:30px 16px; }
   .stat-num { font-size:2.2rem; }
+  .location-map { height:280px; }
+  .legal-cta { padding:32px 24px; }
+  .t-card { padding:24px; }
+  .footer-bottom { flex-direction:column; gap:12px; text-align:center; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { min-height:auto; }
+  .hero-left { padding:calc(var(--nav-h) + 16px) 20px 32px; }
+  .hero-right { height:50vw; min-height:220px; }
+  .hero-h1 { font-size:clamp(1.8rem, 4vw, 2.8rem); margin-bottom:16px; }
+  .hero-sub { margin-bottom:24px; }
+  .about { padding:40px 20px; }
+}
+@media (max-width: 375px) {
+  .hero-actions { flex-direction:column; align-items:flex-start; gap:12px; }
+  .btn-primary, .btn-outline { width:100%; text-align:center; justify-content:center; }
+  .legal-cta { padding:28px 20px; }
+  .about, .services, .testimonials, .location { padding:48px 16px; }
+  .legal-wrap { padding:48px 16px; }
+  footer { padding:40px 16px 20px; }
+  .stat-num { font-size:1.9rem; }
 }
 </style>
 </head>
@@ -367,17 +400,17 @@ footer { background:var(--ink); padding:72px 60px 36px; }
   <div class="about-imgs reveal">
     <div class="tall">
       <div class="img-wrap">
-        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80&fit=crop alt="Kozmetika" onerror="this.style.display='none'" style="height:440px"/>
+        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80&fit=crop alt="Kozmetika" onerror="this.style.display='none'"/>
       </div>
     </div>
     <div class="short">
       <div class="img-wrap warm">
-        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80&fit=crop alt="Nega" onerror="this.style.display='none'" style="height:208px"/>
+        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80&fit=crop alt="Nega" onerror="this.style.display='none'"/>
       </div>
     </div>
     <div class="short">
       <div class="img-wrap stone">
-        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80&fit=crop alt="Stranka" onerror="this.style.display='none'" style="height:208px"/>
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80&fit=crop alt="Stranka" onerror="this.style.display='none'"/>
       </div>
     </div>
   </div>
